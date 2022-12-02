@@ -13,17 +13,18 @@ class DayInterface:
         self.year = year if year is not None else datetime.datetime.now().year
         self.year_url = f"https://adventofcode.com/{self.year}/day"
 
-    def get_day(self, day: int) -> str:
+    def get_day(self) -> str:
         def build_url(day: int, part: int) -> str:
             return f"{self.year_url}/{day}/input"
 
-        res = requests.get(build_url(day, 1), cookies={"session": self.key})
+        res = requests.get(build_url(self.day, 1), cookies={"session": self.key})
         return res.text
 
     def submit_day(self, data: str | int | float) -> str:
-        def build_url(day: int, part: int) -> str:
+        def build_url(day: int) -> str:
             return f"{self.year_url}/{day}/answer"
 
         res = requests.post(
-            build_url(self.day), data=data, cookies={"session": self.key}
+            build_url(self.day), data=str(data), cookies={"session": self.key}
         )
+        return res, res.text
