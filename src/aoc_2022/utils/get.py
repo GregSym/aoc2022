@@ -1,13 +1,29 @@
+import datetime
 import requests
 import configparser
 
-def get_day(day: int) -> str:
-    key = configparser.ConfigParser()
-    key.read(".env")
-    key.get("API", "session")
 
-    def build_url(day: int, part: int) -> str:
-        return f"https://adventofcode.com/2022/day/{day}/input"
+class DayInterface:
+    def __init__(self, day: int = 1, year: int | None = None) -> None:
+        key = configparser.ConfigParser()
+        key.read(".env")
+        key.get("API", "session")
+        self.key = key.get("API", "session")
+        self.day = day
+        self.year = year if year is not None else datetime.datetime.now().year
+        self.year_url = f"https://adventofcode.com/{self.year}/day"
 
-    res = requests.get(build_url(1,1),cookies={"session":key.get("API", "session")})
-    return res.text
+    def get_day(self, day: int) -> str:
+        def build_url(day: int, part: int) -> str:
+            return f"{self.year_url}/{day}/input"
+
+        res = requests.get(build_url(day, 1), cookies={"session": self.key})
+        return res.text
+
+    def submit_day(self, data: str | int | float) -> str:
+        def build_url(day: int, part: int) -> str:
+            return f"{self.year_url}/{day}/answer"
+
+        res = requests.post(
+            build_url(self.day), data=data, cookies={"session": self.key}
+        )
