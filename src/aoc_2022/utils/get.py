@@ -7,7 +7,6 @@ class DayInterface:
     def __init__(self, day: int = 1, year: int | None = None) -> None:
         key = configparser.ConfigParser()
         key.read(".env")
-        key.get("API", "session")
         self.key = key.get("API", "session")
         self.day = day
         self.year = year if year is not None else datetime.datetime.now().year
@@ -20,11 +19,11 @@ class DayInterface:
         res = requests.get(build_url(self.day, 1), cookies={"session": self.key})
         return res.text
 
-    def submit_day(self, data: str | int | float) -> str:
+    def submit_day(self, data: str | int | float, part: int = 1) -> str:
         def build_url(day: int) -> str:
             return f"{self.year_url}/{day}/answer"
 
         res = requests.post(
-            build_url(self.day), data=str(data), cookies={"session": self.key}
+            build_url(self.day), data={"level": part, "answer": data}, cookies={"session": self.key}
         )
         return res, res.text
