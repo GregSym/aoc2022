@@ -38,4 +38,4 @@ def test_day3_part_1(input) -> None:
 if __name__ == "__main__":
     real_input = DayInterface(3).get_day()
     test_day3_part_1(test_input)
-    DayInterface(3).submit_day(solve_day(real_input))
+    print(DayInterface(3).submit_day(solve_day(real_input)))

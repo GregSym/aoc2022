@@ -20,3 +20,7 @@ class DataTransforms:
     @property
     def lines(self) -> list[str]:
         return self.data.splitlines()
+    
+    @property
+    def group_lines(self, number: int) -> list[list[str]]:
+        ...
