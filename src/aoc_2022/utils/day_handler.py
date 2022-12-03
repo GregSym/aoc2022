@@ -26,6 +26,9 @@ class DayInterface:
         res = requests.post(
             build_url(self.day), data={"level": part, "answer": data}, cookies={"session": self.key}
         )
-        if "That\'s the right answer!" in res.text:
-            return "That\'s the right answer!"
+
+        key_phrases = ["That\'s the right answer!"]
+        for phrase in key_phrases:
+            if phrase in res.text:
+                return phrase
         return res, res.text
