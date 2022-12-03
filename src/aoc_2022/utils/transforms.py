@@ -12,3 +12,7 @@ class DataTransforms:
             ]
             for section in sectioned
         ]
+
+    @property
+    def pairs(self) -> tuple[str, str]:
+        return [tuple(pair.split()) for pair in self.data.splitlines()]
