@@ -1,5 +1,5 @@
 import collections
-from aoc_2022.utils.get import DayInterface
+from aoc_2022.utils.day_handler import DayInterface
 from aoc_2022.utils.transforms import DataTransforms
 import pytest
 
