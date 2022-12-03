@@ -31,6 +31,11 @@ def solve_day(input: str):
                 total += priorities[item]
     return total
 
+def solve_day_part_2(input: str):
+    info = DataTransforms(input).group_lines(3)
+    for group in info:
+        for sack in group:...
+
 def test_day3_part_1(input) -> None:
     assert 157 == solve_day(input)
 
