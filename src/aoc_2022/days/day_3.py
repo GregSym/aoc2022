@@ -1,6 +1,4 @@
 import collections
-from enum import Enum
-from typing import NamedTuple
 from aoc_2022.utils.get import DayInterface
 from aoc_2022.utils.transforms import DataTransforms
 import pytest
