@@ -16,3 +16,7 @@ class DataTransforms:
     @property
     def pairs(self) -> tuple[str, str]:
         return [tuple(pair.split()) for pair in self.data.splitlines()]
+    
+    @property
+    def lines(self) -> list[str]:
+        return self.data.splitlines()
