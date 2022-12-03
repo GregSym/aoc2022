@@ -38,6 +38,8 @@ def solve_day_part_2(input: str):
 
 def test_day3_part_1(input) -> None:
     assert 157 == solve_day(input)
+def test_day3_part_1(input) -> None:
+    assert 70 == solve_day_part_2(input)
 
 
 if __name__ == "__main__":
