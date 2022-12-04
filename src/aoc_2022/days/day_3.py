@@ -31,18 +31,31 @@ def solve_day(input: str):
                 total += priorities[item]
     return total
 
+
 def solve_day_part_2(input: str):
     info = DataTransforms(input).group_lines(3)
+    total = 0
     for group in info:
-        for sack in group:...
+        sacks = []
+        for sack in group:
+            sacks.append(collections.Counter(sack))
+        all_badges = {badge for sack in sacks for badge in sack}
+        for badge in all_badges:
+            if badge in sacks[0] and badge in sacks[1] and badge in sacks[2]:
+                total += priorities[badge]
+    return total
+
 
 def test_day3_part_1(input) -> None:
     assert 157 == solve_day(input)
-def test_day3_part_1(input) -> None:
+
+
+def test_day3_part_2(input) -> None:
     assert 70 == solve_day_part_2(input)
 
 
 if __name__ == "__main__":
     real_input = DayInterface(3).get_day()
     test_day3_part_1(test_input)
-    print(DayInterface(3).submit_day(solve_day(real_input)))
+    test_day3_part_2(test_input)
+    print(DayInterface(3).submit_day(solve_day_part_2(real_input), 2))

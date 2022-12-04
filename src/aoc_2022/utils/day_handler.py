@@ -1,4 +1,5 @@
 import datetime
+import re
 import requests
 import configparser
 
@@ -31,4 +32,9 @@ class DayInterface:
         for phrase in key_phrases:
             if phrase in res.text:
                 return phrase
+        wait_time = re.search(r"You have (?P<secs>[0-9]+)s left to wait", res.text)
+        if wait_time is not None:
+            return f"""You submitted too recently. 
+            You have {wait_time}s left to wait. 
+            (try not to spam their site)"""
         return res, res.text

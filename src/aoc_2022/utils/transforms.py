@@ -22,5 +22,5 @@ class DataTransforms:
         return self.data.splitlines()
 
     def group_lines(self, number: int) -> list[tuple[str]]:
-        grouped = [lines for lines in zip(*[self.data[i:] for i in number])]
+        grouped = [lines for lines in zip(*[self.data.splitlines()[i:] for i in range(number)])]
         return [grouped[i] for i in range(0, len(grouped), number)]
