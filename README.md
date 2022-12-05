@@ -59,5 +59,13 @@ if they're doing an aoc2023 then maybe at that point
    aoc_interface.submit_day(solve_day(real_input))
    aoc_interface.submit_day(solve_day_part_2(real_input), 2)
    ```
-1. use the cli (TODO! doesn't exist yet)
-   currently I have helper scripts to pull stuff in and out of txt files to interface with rust, gonna streamline it maybe? (Could also just wind up rewriting in rust tho ;) )
+1. use the cli (TODO! doesn't really have a lot of stuff going on yet)
+   UNTESTED
+   ```shell
+   # seems to work
+   # pull down data
+   python -m aoc_2022.tools.cli get > some.txt
+   # submit data
+   # UNTESTED
+   python -m aoc_2022.tools.cli submit --day 3 --year 2022 --part 2 -s 594  # where -s is the solution
+   ```
