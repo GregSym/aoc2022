@@ -27,13 +27,15 @@ def input():
 class Stack:
     stack: dict[int, list[str]]
     isntrs: list[Instr]
+    part: int = 1
 
     @classmethod
-    def from_str(cls, text: str, instrs: list[Instr]) -> Self:
+    def from_str(cls, text: str, instrs: list[Instr], part: int = 1) -> Self:
         pattern = re.compile(r"(?P<index>[0-9]+)")
         lines = text.splitlines()
         index_locations = [
-            (match.start("index"), int(match["index"])) for match in pattern.finditer(lines.pop())
+            (match.start("index"), int(match["index"]))
+            for match in pattern.finditer(lines.pop())
         ]
         stack: collections.defaultdict[int, list[str]] = collections.defaultdict(list)
         for i, stack_num in index_locations:
@@ -41,11 +43,18 @@ class Stack:
                 if line[i] != " ":
                     stack[stack_num].append(line[i])
         stack = {k: list(reversed(v)) for k, v in stack.items()}
-        return cls(stack, instrs)
+        return cls(stack, instrs, part)
 
     def exec_instr(self, instr: Instr):
-        for _ in range(instr.move):
-            self.stack[instr.destination].append(self.stack[instr.current].pop())
+        if self.part == 1:
+            for _ in range(instr.move):
+                self.stack[instr.destination].append(self.stack[instr.current].pop())
+
+        else:
+            self.stack[instr.destination].extend(
+                self.stack[instr.current][-instr.move :]
+            )
+            self.stack[instr.current] = self.stack[instr.current][: -instr.move]
 
     def exec_queue(self):
         """exec full instr queue"""
@@ -81,10 +90,10 @@ class Instr:
         return [cls(**match.groupdict()) for match in pattern.finditer(text)]
 
 
-def solve_day(input: str) -> str:
+def solve_day(input: str, part: int = 1) -> str:
     stack, instructions = DataTransforms(input).header_footer
     instrs = Instr.from_instructions(instructions)
-    stk = Stack.from_str(stack, instrs)
+    stk = Stack.from_str(stack, instrs, part)
     stk.exec_queue()
     return stk.top_crates
 
@@ -93,7 +102,12 @@ def test_day_5_part_1(input: str) -> None:
     assert "CMZ" == solve_day(input)
 
 
+def test_day_5_part_2(input: str) -> None:
+    assert "MCD" == solve_day(input, 2)
+
+
 if __name__ == "__main__":
     real_input = DayInterface(5).get_day()
     test_day_5_part_1(test_input)
-    print(DayInterface(5).submit_day(solve_day(real_input)))
+    test_day_5_part_2(test_input)
+    print(DayInterface(5).submit_day(solve_day(real_input, 2), 2))
