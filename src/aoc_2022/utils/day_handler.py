@@ -28,7 +28,7 @@ class DayInterface:
             build_url(self.day), data={"level": part, "answer": data}, cookies={"session": self.key}
         )
 
-        key_phrases = ["That\'s the right answer!"]
+        key_phrases = ["That\'s the right answer!", "Both parts of this puzzle are complete!"]
         for phrase in key_phrases:
             if phrase in res.text:
                 return phrase
