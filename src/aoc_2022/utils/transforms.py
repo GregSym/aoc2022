@@ -20,6 +20,10 @@ class DataTransforms:
     @property
     def lines(self) -> list[str]:
         return self.data.splitlines()
+    
+    @property
+    def header_footer(self) -> tuple[str, str]:
+        return self.data.split("\n\n")
 
     def group_lines(self, number: int) -> list[tuple[str]]:
         grouped = [lines for lines in zip(*[self.data.splitlines()[i:] for i in range(number)])]

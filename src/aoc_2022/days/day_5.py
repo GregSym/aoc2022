@@ -1,0 +1,61 @@
+from dataclasses import dataclass
+import re
+from typing import Self
+from aoc_2022.utils.day_handler import DayInterface
+from aoc_2022.utils.transforms import DataTransforms
+import pytest
+
+test_input = """    [D]    
+[N] [C]    
+[Z] [M] [P]
+ 1   2   3 
+
+move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2"""
+
+
+@pytest.fixture
+def input():
+    return test_input
+
+
+@dataclass
+class Instr:
+    move: int
+    current: int
+    destination: int
+
+    def __post_init__(self):
+        if (
+            isinstance(self.move, str)
+            or isinstance(self.current, str)
+            or isinstance(self.destination, str)
+        ):
+            self.move = int(self.move)
+            self.current = int(self.current)
+            self.destination = int(self.destination)
+
+    @classmethod
+    def from_instructions(cls, text: str) -> list[Self]:
+        pattern = re.compile(
+            r"move (?P<move>[0-9]+) from (?P<current>[0-9]+) to (?P<destination>[0-9]+)"
+        )
+        return [cls(**match.groupdict()) for match in pattern.finditer(text)]
+
+
+def solve_day(input: str) -> str:
+    stack, instructions = DataTransforms(input).header_footer
+    instrs = Instr.from_instructions(instructions)
+
+
+def test_day_5_part_1(input: str) -> None:
+    assert "CMZ" == solve_day(input)
+
+
+if __name__ == "__main__":
+    real_input = DayInterface(5).get_day()
+    print(real_input.split("\n\n"))
+    test_day_5_part_1(test_input)
+    print(DayInterface(5).submit_day(solve_day(real_input)))
