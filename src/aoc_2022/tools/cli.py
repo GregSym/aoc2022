@@ -10,8 +10,8 @@ class AocArgs(NamedTuple):
 
     @classmethod
     def populate_from_args(cls, args: argparse.Namespace) -> Self:
-        day = datetime.now().day % 26
-        day = 1 if day == 0 else day
+        day = datetime.now().day % 25
+        day = 25 if day == 0 else day  # 1 - 25
         return cls(
             args.day if args.day is not None else day,
             args.year if args.year is not None else datetime.now().year,
