@@ -100,16 +100,16 @@ class Shell:
                     edges.append((parent, dir.name))
                 explicit_size = sum([file.size for file in instr1.files])
                 sizes[parent] = explicit_size
-        for parent, size in sizes.items():
-            for par, child in edges:
-                todo = []
-                todo.append((par,child))
-                while todo:
-                    for i,j in edges:
-                        if todo[-1][1] == i:
-                            todo.append((i,j))
-                    if todo[-1][1] not in [i for i,_ in edges]:
-                        ...
+        # for parent, size in sizes.items():
+        #     for par, child in edges:
+        #         todo = []
+        #         todo.append((par,child))
+        #         while todo:
+        #             for i,j in edges:
+        #                 if todo[-1][1] == i:
+        #                     todo.append((i,j))
+        #             if todo[-1][1] not in [i for i,_ in edges]:
+        #                 ...
         return sum([size for size in sizes.values() if size <= 100_000])
 
 def solve_day(input: str) -> int:
