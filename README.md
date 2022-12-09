@@ -66,6 +66,5 @@ if they're doing an aoc2023 then maybe at that point
    # pull down data
    python -m aoc_2022.tools.cli get > some.txt
    # submit data
-   # UNTESTED
    python -m aoc_2022.tools.cli submit --day 3 --year 2022 --part 2 -s 594  # where -s is the solution
    ```
