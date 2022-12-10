@@ -85,60 +85,38 @@ class Instr:
         return [cls(**match.groupdict()) for match in pattern.finditer(text)]
 
 
-@dataclass
-class Shell:
-    instructions: list[Instr]
+def tally(instructions: list[Instr]) -> list[tuple[str, str]]:
+    edges = []
+    sizes = {}
+    for instr0, instr1 in zip(instructions, instructions[1:]):
+        if "cd " in instr0.instruction and ".." not in instr0.instruction:
+            parent = instr0.instruction.removeprefix("cd ")
+            for dir in instr1.dirs:
+                edges.append((parent, dir.name))
+            explicit_size = sum([file.size for file in instr1.files])
+            sizes[parent] = explicit_size
+    for dirname in sizes:
+        for dir in path(dirname, edges):
+            if dir != dirname:
+                sizes[dirname] += sizes[dir]
+    return sum([size for size in sizes.values() if size <= 100_000])
 
-    @property
-    def structure(self) -> list[tuple[str, str]]:
-        tree = []
-        edges = []
-        sizes = {}
-        for instr0, instr1 in zip(self.instructions, self.instructions[1:]):
-            if "cd " in instr0.instruction and ".." not in instr0.instruction:
-                parent = instr0.instruction.removeprefix("cd ")
-                for dir in instr1.dirs:
-                    edges.append((parent, dir.name))
-                explicit_size = sum([file.size for file in instr1.files])
-                sizes[parent] = explicit_size
-        # for parent, size in sizes.items():
-        #     for par, child in edges:
-        #         todo = []
-        #         todo.append((par,child))
-        #         while todo:
-        #             for i,j in edges:
-        #                 if todo[-1][1] == i:
-        #                     todo.append((i,j))
-        #             if todo[-1][1] not in [i for i,_ in edges]:
-        #                 ...
-        # return sum([size for size in sizes.values() if size <= 100_000])
-        for dirname in sizes:
-            for dir in self.path(dirname, edges):
-                if dir != dirname:
-                    sizes[dirname] += sizes[dir]
-        return sum([size for size in sizes.values() if size <= 100_000])
-        # return edges
 
-    def path(
-        self, dirname: str, to_search: list[tuple[str, str]]
-    ) -> Generator[str, None, None]:
-        yield dirname
-        for i, edge in enumerate(to_search):
-            if edge[0] == dirname:
-                if i < len(to_search) - 1:
-                    for dir in self.path(edge[1], [*to_search[:i], *to_search[i + 1 :]]):
-                        yield dir
-                else:
-                    for dir in self.path(edge[1], [*to_search[:i]]):
-                        yield dir
-
-    def path_unwrap(self, dirname: str, to_search: list[tuple[str, str]]) -> list[str]:
-        return [dirname for dirname in self.path(dirname, to_search)]
+def path(dirname: str, to_search: list[tuple[str, str]]) -> Generator[str, None, None]:
+    yield dirname
+    for i, edge in enumerate(to_search):
+        if edge[0] == dirname:
+            if i < len(to_search) - 1:
+                for dir in path(edge[1], [*to_search[:i], *to_search[i + 1 :]]):
+                    yield dir
+            else:
+                for dir in path(edge[1], [*to_search[:i]]):
+                    yield dir
 
 
 def solve_day(input: str) -> int:
     instrs = Instr.from_text(input)
-    return Shell(instrs).structure
+    return tally(instrs)
 
 
 def test_day_7_part_1(input: str) -> None:
