@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import functools
 import re
 from typing import Any, Generator, Self
 from aoc_2022.utils.day_handler import DayInterface
@@ -85,9 +86,9 @@ class Instr:
         return [cls(**match.groupdict()) for match in pattern.finditer(text)]
 
 
-def tally(instructions: list[Instr]) -> list[tuple[str, str]]:
-    edges = []
-    sizes = {}
+def tally(instructions: list[Instr]) -> int:
+    edges: list[tuple[str, str]] = []
+    sizes: dict[str, int] = {}
     for instr0, instr1 in zip(instructions, instructions[1:]):
         if "cd " in instr0.instruction and ".." not in instr0.instruction:
             parent = instr0.instruction.removeprefix("cd ")
@@ -95,8 +96,14 @@ def tally(instructions: list[Instr]) -> list[tuple[str, str]]:
                 edges.append((parent, dir.name))
             explicit_size = sum([file.size for file in instr1.files])
             sizes[parent] = explicit_size
+    
+    @functools.lru_cache
+    def _path(dir: str) -> list[str]:
+        return [d for d in path(dir, edges)]
+    
+    # adding descendants' sizes
     for dirname in sizes:
-        for dir in path(dirname, edges):
+        for dir in _path(dirname):
             if dir != dirname:
                 sizes[dirname] += sizes[dir]
     return sum([size for size in sizes.values() if size <= 100_000])
