@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import re
-from typing import Any, Self
+from typing import Any, Generator, Self
 from aoc_2022.utils.day_handler import DayInterface
 from aoc_2022.utils.transforms import DataTransforms
 import pytest
@@ -57,7 +57,8 @@ class File(Response):
     size: int
 
     def __post_init__(self) -> None:
-        if isinstance(self.size, str): self.size = int(self.size)
+        if isinstance(self.size, str):
+            self.size = int(self.size)
 
     @classmethod
     def from_response(cls, text: str) -> Self:
@@ -89,7 +90,7 @@ class Shell:
     instructions: list[Instr]
 
     @property
-    def structure(self) -> dict[str, Any]:
+    def structure(self) -> list[tuple[str, str]]:
         tree = []
         edges = []
         sizes = {}
@@ -110,7 +111,30 @@ class Shell:
         #                     todo.append((i,j))
         #             if todo[-1][1] not in [i for i,_ in edges]:
         #                 ...
+        # return sum([size for size in sizes.values() if size <= 100_000])
+        for dirname in sizes:
+            for dir in self.path(dirname, edges):
+                if dir != dirname:
+                    sizes[dirname] += sizes[dir]
         return sum([size for size in sizes.values() if size <= 100_000])
+        # return edges
+
+    def path(
+        self, dirname: str, to_search: list[tuple[str, str]]
+    ) -> Generator[str, None, None]:
+        yield dirname
+        for i, edge in enumerate(to_search):
+            if edge[0] == dirname:
+                if i < len(to_search) - 1:
+                    for dir in self.path(edge[1], [*to_search[:i], *to_search[i + 1 :]]):
+                        yield dir
+                else:
+                    for dir in self.path(edge[1], [*to_search[:i]]):
+                        yield dir
+
+    def path_unwrap(self, dirname: str, to_search: list[tuple[str, str]]) -> list[str]:
+        return [dirname for dirname in self.path(dirname, to_search)]
+
 
 def solve_day(input: str) -> int:
     instrs = Instr.from_text(input)
@@ -124,5 +148,5 @@ def test_day_7_part_1(input: str) -> None:
 if __name__ == "__main__":
     solve_day(test_input)
     test_day_7_part_1(test_input)
-    # real_input = DayInterface(7).get_day()
-    # print(DayInterface(7).submit_day(solve_day(real_input)))
+    real_input = DayInterface(7).get_day()
+    print(DayInterface(7).submit_day(solve_day(real_input)))
