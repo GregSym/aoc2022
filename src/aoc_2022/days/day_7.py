@@ -87,37 +87,35 @@ class Instr:
 
 
 def tally(instructions: list[Instr]) -> int:
-    edges: list[tuple[str, str]] = []
+    edges: set[tuple[str, str]] = set()
     sizes: dict[str, int] = {}
     for instr0, instr1 in zip(instructions, instructions[1:]):
         if "cd " in instr0.instruction and ".." not in instr0.instruction:
             parent = instr0.instruction.removeprefix("cd ")
             for dir in instr1.dirs:
-                edges.append((parent, dir.name))
+                edges.add((parent, dir.name))
             explicit_size = sum([file.size for file in instr1.files])
             sizes[parent] = explicit_size
     
-    @functools.lru_cache
-    def _path(dir: str) -> list[str]:
-        return [d for d in path(dir, edges)]
-    
+    frozen_edges = frozenset(edges)
     # adding descendants' sizes
     for dirname in sizes:
-        for dir in _path(dirname):
+        for dir in path(dirname, frozen_edges):
             if dir != dirname:
                 sizes[dirname] += sizes[dir]
     return sum([size for size in sizes.values() if size <= 100_000])
 
-
-def path(dirname: str, to_search: list[tuple[str, str]]) -> Generator[str, None, None]:
+@functools.lru_cache
+def path(dirname: str, to_search_set: set[tuple[str, str]]) -> Generator[str, None, None]:
+    to_search = [*to_search_set]
     yield dirname
     for i, edge in enumerate(to_search):
         if edge[0] == dirname:
             if i < len(to_search) - 1:
-                for dir in path(edge[1], [*to_search[:i], *to_search[i + 1 :]]):
+                for dir in path(edge[1], frozenset([*to_search[:i], *to_search[i + 1 :]])):
                     yield dir
             else:
-                for dir in path(edge[1], [*to_search[:i]]):
+                for dir in path(edge[1], frozenset([*to_search[:i]])):
                     yield dir
 
 
@@ -131,7 +129,6 @@ def test_day_7_part_1(input: str) -> None:
 
 
 if __name__ == "__main__":
-    solve_day(test_input)
     test_day_7_part_1(test_input)
     real_input = DayInterface(7).get_day()
     print(DayInterface(7).submit_day(solve_day(real_input)))
