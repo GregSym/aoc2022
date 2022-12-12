@@ -42,4 +42,7 @@ class DayInterface:
             return f"""You submitted too recently. 
             You have {wait_time['secs']}s left to wait. 
             (try not to spam their site)"""
+        hint = re.search(r"That\'s not the right answer\; (?P<hint>[^\.]*)\.", res.text)
+        if hint is not None:
+            return hint[0]
         return res, res.text

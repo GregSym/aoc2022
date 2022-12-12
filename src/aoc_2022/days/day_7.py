@@ -71,7 +71,7 @@ class File(Response):
 @dataclass
 class Instr:
     instruction: str
-    response: list[Response]
+    response: str
 
     @property
     def files(self) -> list[File]:
@@ -96,9 +96,9 @@ def tally(instructions: list[Instr]) -> int:
                 dir_stack.pop()
             else:
                 dir_stack.append(instr0.instruction.removeprefix("cd "))
-            for dir in dir_stack:
+            for i, dir in enumerate(dir_stack):
                 explicit_size = sum([file.size for file in instr1.files])
-                sizes[dir] += explicit_size
+                sizes["/".join(dir_stack[:i]) + f"/{dir}"] += explicit_size
     return sum([size for size in sizes.values() if size <= 100_000])
 
 
