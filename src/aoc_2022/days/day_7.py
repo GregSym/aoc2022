@@ -1,3 +1,4 @@
+import collections
 from dataclasses import dataclass
 import functools
 import re
@@ -87,36 +88,18 @@ class Instr:
 
 
 def tally(instructions: list[Instr]) -> int:
-    edges: set[tuple[str, str]] = set()
-    sizes: dict[str, int] = {}
+    sizes: dict[str, int] = collections.defaultdict(int)
+    dir_stack = []
     for instr0, instr1 in zip(instructions, instructions[1:]):
-        if "cd " in instr0.instruction and ".." not in instr0.instruction:
-            parent = instr0.instruction.removeprefix("cd ")
-            for dir in instr1.dirs:
-                edges.add((parent, dir.name))
-            explicit_size = sum([file.size for file in instr1.files])
-            sizes[parent] = explicit_size
-    
-    frozen_edges = frozenset(edges)
-    # adding descendants' sizes
-    for dirname in sizes:
-        for dir in path(dirname, frozen_edges):
-            if dir != dirname:
-                sizes[dirname] += sizes[dir]
-    return sum([size for size in sizes.values() if size <= 100_000])
-
-@functools.lru_cache
-def path(dirname: str, to_search_set: set[tuple[str, str]]) -> Generator[str, None, None]:
-    to_search = [*to_search_set]
-    yield dirname
-    for i, edge in enumerate(to_search):
-        if edge[0] == dirname:
-            if i < len(to_search) - 1:
-                for dir in path(edge[1], frozenset([*to_search[:i], *to_search[i + 1 :]])):
-                    yield dir
+        if "cd " in instr0.instruction:
+            if ".." in instr0.instruction:
+                dir_stack.pop()
             else:
-                for dir in path(edge[1], frozenset([*to_search[:i]])):
-                    yield dir
+                dir_stack.append(instr0.instruction.removeprefix("cd "))
+            for dir in dir_stack:
+                explicit_size = sum([file.size for file in instr1.files])
+                sizes[dir] += explicit_size
+    return sum([size for size in sizes.values() if size <= 100_000])
 
 
 def solve_day(input: str) -> int:
