@@ -87,7 +87,7 @@ class Instr:
         return [cls(**match.groupdict()) for match in pattern.finditer(text)]
 
 
-def tally(instructions: list[Instr]) -> int:
+def tally(instructions: list[Instr], part: int = 1) -> int:
     sizes: dict[str, int] = collections.defaultdict(int)
     dir_stack = []
     for instr0, instr1 in zip(instructions, instructions[1:]):
@@ -99,7 +99,16 @@ def tally(instructions: list[Instr]) -> int:
             for i, dir in enumerate(dir_stack):
                 explicit_size = sum([file.size for file in instr1.files])
                 sizes["/".join(dir_stack[:i]) + f"/{dir}"] += explicit_size
-    return sum([size for size in sizes.values() if size <= 100_000])
+    if part == 1:
+        return sum([size for size in sizes.values() if size <= 100_000])
+    if part == 2:
+        return min(
+            [
+                size
+                for size in sizes.values()
+                if size >= 30000000 - (70000000 - sizes["//"])
+            ]
+        )
 
 
 def solve_day(input: str) -> int:
@@ -107,11 +116,21 @@ def solve_day(input: str) -> int:
     return tally(instrs)
 
 
+def solve_day_part_2(input: str) -> int:
+    instrs = Instr.from_text(input)
+    return tally(instrs, 2)
+
+
 def test_day_7_part_1(input: str) -> None:
     assert 95437 == solve_day(input)
 
 
+def test_day_7_part_2(input: str) -> None:
+    assert 24933642 == solve_day_part_2(input)
+
+
 if __name__ == "__main__":
     test_day_7_part_1(test_input)
+    test_day_7_part_2(test_input)
     real_input = DayInterface(7).get_day()
-    print(DayInterface(7).submit_day(solve_day(real_input)))
+    print(DayInterface(7).submit_day(solve_day_part_2(real_input), 2))
