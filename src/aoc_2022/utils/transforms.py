@@ -49,6 +49,5 @@ class DataTransforms:
         safe_indexer: dict[tuple[int, int], int] = collections.defaultdict(int)
         for i, row in enumerate(self.data.splitlines()):
             for j, num in enumerate(row):
-                safe_indexer[(j,i)] = int(num)  # x,y for the key, y like pixels
+                safe_indexer[(j, i)] = int(num)  # x,y for the key, y like pixels
         return safe_indexer
-    
