@@ -97,6 +97,7 @@ def test_day_9_part_1(input: str) -> None:
 
 
 def test_day_9_part_2(input: str) -> None:
+    # handles both part 1 and 2, for extra test
     assert 13 == solve_day_part_2(input, 2)
     assert 1 == solve_day_part_2(input)
     example_1 = """R 5
