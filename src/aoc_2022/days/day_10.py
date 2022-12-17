@@ -24,7 +24,7 @@ def test_day_10_part_1(input: str) -> None:
 #     assert 8 == solve_day_part_2(input)
 
 if __name__ == "__main__":
-    real_input = DayInterface(9).get_day()
+    real_input = DayInterface(10).get_day()
     print(real_input)
     test_day_10_part_1(test_input)
     # test_day_10_part_2(test_input)

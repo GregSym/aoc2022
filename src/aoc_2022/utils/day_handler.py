@@ -20,7 +20,7 @@ class DayInterface:
         res = requests.get(build_url(self.day), cookies={"session": self.key})
         return res.text
 
-    def submit_day(self, data: str | int | float, part: int = 1) -> str:
+    def submit_day(self, data: str | int | float, part: int = 1) -> str | tuple[requests.Response, str]:
         def build_url(day: int) -> str:
             return f"{self.year_url}/{day}/answer"
 
