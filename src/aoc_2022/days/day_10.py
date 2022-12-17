@@ -174,14 +174,13 @@ class Instr:
 
     @property
     def cycles(self) -> int:
-        if type(self).__name__ == "noop":
-            return 1
-        else:
-            return 2
+        return 2
 
 
 class Noop(Instr):
-    ...
+    @property
+    def cycles(self) -> int:
+        return 1
 
 
 @dataclass
@@ -213,7 +212,7 @@ def solve_day(input: str) -> int:
         )
         for item in sublist
     ]
-    cycles = 0
+    cycles = 1
     x = 1
     signal = 0
     lookup: dict[int, int] = {}
@@ -221,14 +220,12 @@ def solve_day(input: str) -> int:
     for instr in instrs:
         for i in range(cycles, cycles + instr.cycles):
             lookup[i] = i * x  # build lookup
+            xlookup[i] = x
+            # print(xlookup[i], lookup[i], i, instr)
         cycles += instr.cycles
         if isinstance(instr, Add):
             x += instr.value
         signal = cycles * x
-    # for i in range(cycles):
-    #     print(lookup[i], i)
-    print(instrs)
-    print([lookup[target] for target in targets])
     return sum([lookup[target] for target in targets])
 
 
@@ -241,7 +238,7 @@ def test_day_10_part_1(input: str) -> None:
 
 if __name__ == "__main__":
     real_input = DayInterface(10).get_day()
-    print(real_input)
+    # print(real_input)
     test_day_10_part_1(test_input)
     # test_day_10_part_2(test_input)
-    # print(DayInterface(9).submit_day(solve_day_part_2(real_input, 10), 2))
+    print(DayInterface(10).submit_day(solve_day(real_input)))
