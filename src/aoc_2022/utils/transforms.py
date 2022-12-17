@@ -17,7 +17,7 @@ class DataTransforms:
         ]
 
     @property
-    def pairs(self) -> tuple[str, str]:
+    def pairs(self) -> list[tuple[str, str]]:
         return [tuple(pair.split()) for pair in self.data.splitlines()]
 
     @property
@@ -26,7 +26,7 @@ class DataTransforms:
 
     @property
     def header_footer(self) -> tuple[str, str]:
-        return self.data.split("\n\n")
+        return tuple(self.data.split("\n\n"))
 
     def group_lines(self, number: int) -> list[tuple[str]]:
         grouped = [
@@ -51,3 +51,7 @@ class DataTransforms:
             for j, num in enumerate(row):
                 safe_indexer[(j, i)] = int(num)  # x,y for the key, y like pixels
         return safe_indexer
+    
+    @property
+    def tuples(self) -> list[tuple]:
+        return [tuple(line.split()) for line in self.data.splitlines()]
