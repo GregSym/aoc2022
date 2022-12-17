@@ -45,4 +45,15 @@ class DayInterface:
         hint = re.search(r"That\'s not the right answer\; (?P<hint>[^\.]*)\.", res.text)
         if hint is not None:
             return hint[0]
+        timeout = re.search(
+            r"Because you have guessed incorrectly (?P<guesses>[0-9]+)"
+            r" times on this puzzle, please wait (?P<minutes>[0-9]+) minutes before trying again."
+            "|"
+            r"You gave an answer too recently; "
+            r"you have to wait after submitting an answer before trying again.  "
+            r"You have (?P<minutes_alt>[0-9]+)m (?P<secs>[0-9]+)s left to wait.",
+            res.text,
+        )
+        if timeout is not None:
+            return timeout[0]
         return res, res.text
