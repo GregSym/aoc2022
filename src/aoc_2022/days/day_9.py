@@ -65,9 +65,9 @@ def solve_day_part_2(input: str, knots: int = 10) -> int:
     origin = Vector2D(0, 0)
     paths = collections.defaultdict(lambda: [origin])
     for instr in info:
-        for leading, trailing in zip(range(knots), range(1, knots)):
-            for _ in range(instr.displacement):
-                paths[leading].append(paths[leading][-1] + DIRECTIONS[instr.direction])
+        for _ in range(instr.displacement):
+            paths[0].append(paths[0][-1] + DIRECTIONS[instr.direction])
+            for leading, trailing in zip(range(knots), range(1, knots)):
                 if not paths[leading][-1].adjacent(paths[trailing][-1]):
                     paths[trailing].append(paths[leading][-2])
     print(paths[knots - 1])
@@ -80,7 +80,16 @@ def test_day_9_part_1(input: str) -> None:
 
 def test_day_9_part_2(input: str) -> None:
     assert 13 == solve_day_part_2(input, 2)
-    assert 36 == solve_day_part_2(input)
+    assert 1 == solve_day_part_2(input)
+    example_1 = """R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20"""
+    assert 36 == solve_day_part_2(example_1)
 
 if __name__ == "__main__":
     # test_day_7_part_2(test_input)
