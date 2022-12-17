@@ -33,6 +33,7 @@ class DayInterface:
         key_phrases = [
             "That's the right answer!",
             "Both parts of this puzzle are complete!",
+            "You don\'t seem to be solving the right level.  Did you already complete it?"
         ]
         for phrase in key_phrases:
             if phrase in res.text:

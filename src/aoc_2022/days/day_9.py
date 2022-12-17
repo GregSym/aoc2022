@@ -84,51 +84,10 @@ def solve_day_part_2(input: str, knots: int = 10) -> int:
             for leading, trailing in zip(range(knots), range(1, knots)):
                 if not paths[leading][-1].adjacent(paths[trailing][-1]):
                     # they have some dumb diagonal only movement rule for this one
-                    if (
-                        paths[leading][-1].x != paths[trailing][-1].x
-                        and paths[leading][-1].y != paths[trailing][-1].y
-                    ):
-                        diff = paths[leading][-1] - paths[trailing][-1]
-                        y_dir = diff.y // abs(diff.y)
-                        x_dir = diff.x // abs(diff.x)
-                        # paths[trailing].append(
-                        #     paths[trailing][-1] + Vector2D(x_dir, y_dir)
-                        # )
-                        assert (
-                            abs(diff.y) > 0
-                            and abs(diff.x) > 0
-                        ), f"{diff=}"
-                        if abs(diff.x) == 1:
-                            paths[trailing].append(
-                                paths[trailing][-1]
-                                + Vector2D(diff.x, y_dir * (abs(diff.y) - 1))
-                            )
-                        elif abs(diff.y) == 1:
-                            paths[trailing].append(
-                                paths[trailing][-1]
-                                + Vector2D(x_dir * (abs(diff.x) - 1), diff.y)
-                            )
-                        # elif abs(diff.y) > 2 and abs(diff.x) > 2:
-                        else:
-                            paths[trailing].append(
-                                paths[trailing][-1]
-                                + Vector2D(x_dir * (abs(diff.x) - 1), y_dir * (abs(diff.y) - 1))
-                            )
-                        # else:
-                        #     paths[trailing].append(
-                        #         paths[trailing][-1]
-                        #         + Vector2D(x_dir, y_dir * (abs(diff.y) - 1))
-                        #     )
-
-                            # assert abs(diff.x) == 2
-                            # assert abs(diff.y) == 2
-                            # paths[trailing].append(
-                            #     paths[trailing][-1]
-                            #     + Vector2D(x_dir, y_dir)
-                            # )
-
-                    else:
-                        paths[trailing].append(paths[leading][-2])
+                    diff = paths[leading][-1] - paths[trailing][-1]
+                    y_dir = diff.y // abs(diff.y) if diff.y != 0 else 0
+                    x_dir = diff.x // abs(diff.x) if diff.x != 0 else 0
+                    paths[trailing].append(paths[trailing][-1] + Vector2D(x_dir, y_dir))
     path_visualiser(paths[knots - 1])
     return len(set(paths[knots - 1]))
 
