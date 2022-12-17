@@ -1,3 +1,4 @@
+import collections
 from dataclasses import dataclass
 from typing import NamedTuple, Self
 from aoc_2022.utils.day_handler import DayInterface
@@ -47,7 +48,7 @@ class Instr(NamedTuple):
     displacement: int
 
 
-def solve_day(input: str) -> int:
+def solve_day(input: str, part: int = 1) -> int:
     info = [Instr(dir, int(delta)) for dir, delta in DataTransforms(input).tuples]
     origin = Vector2D(0, 0)
     head_path = [origin]
@@ -59,17 +60,31 @@ def solve_day(input: str) -> int:
                 tail_path.append(head_path[-2])
     return len(set(tail_path))
 
+def solve_day_part_2(input: str, knots: int = 10) -> int:
+    info = [Instr(dir, int(delta)) for dir, delta in DataTransforms(input).tuples]
+    origin = Vector2D(0, 0)
+    paths = collections.defaultdict(lambda: [origin])
+    for instr in info:
+        for leading, trailing in zip(range(knots), range(1, knots)):
+            for _ in range(instr.displacement):
+                paths[leading].append(paths[leading][-1] + DIRECTIONS[instr.direction])
+                if not paths[leading][-1].adjacent(paths[trailing][-1]):
+                    paths[trailing].append(paths[leading][-2])
+    print(paths[knots - 1])
+    return len(set(paths[knots - 1]))
+
 
 def test_day_9_part_1(input: str) -> None:
     assert 13 == solve_day(input)
 
 
-# def test_day_9_part_2(input: str) -> None:
-#     assert 8 == solve_day_part_2(input)
+def test_day_9_part_2(input: str) -> None:
+    assert 13 == solve_day_part_2(input, 2)
+    assert 36 == solve_day_part_2(input)
 
 if __name__ == "__main__":
     # test_day_7_part_2(test_input)
     real_input = DayInterface(9).get_day()
     test_day_9_part_1(test_input)
-    # test_day_9_part_2(test_input)
+    test_day_9_part_2(test_input)
     print(DayInterface(9).submit_day(solve_day(real_input)))
