@@ -108,11 +108,18 @@ def solve_day_part_2(input: str, knots: int = 10) -> int:
                                 paths[trailing][-1]
                                 + Vector2D(x_dir * (abs(diff.x) - 1), diff.y)
                             )
+                        # elif abs(diff.y) > 2 and abs(diff.x) > 2:
                         else:
                             paths[trailing].append(
                                 paths[trailing][-1]
-                                + Vector2D(x_dir * (abs(diff.x) - 1), diff.y)
+                                + Vector2D(x_dir * (abs(diff.x) - 1), y_dir * (abs(diff.y) - 1))
                             )
+                        # else:
+                        #     paths[trailing].append(
+                        #         paths[trailing][-1]
+                        #         + Vector2D(x_dir, y_dir * (abs(diff.y) - 1))
+                        #     )
+
                             # assert abs(diff.x) == 2
                             # assert abs(diff.y) == 2
                             # paths[trailing].append(
