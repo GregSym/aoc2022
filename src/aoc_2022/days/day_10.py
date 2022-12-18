@@ -1,3 +1,4 @@
+import collections
 from dataclasses import dataclass
 import itertools
 import re
@@ -154,6 +155,14 @@ noop
 noop
 """
 
+part_2_answer = """##..##..##..##..##..##..##..##..##..##..
+###...###...###...###...###...###...###.
+####....####....####....####....####....
+#####.....#####.....#####.....#####.....
+######......######......######......####
+#######.......#######.......#######.....
+"""
+
 
 @pytest.fixture
 def input():
@@ -200,6 +209,14 @@ class Add(Instr):
         )
 
 
+class Rect(NamedTuple):
+    width: int = 40
+    height: int = 6
+
+
+CRT = Rect()
+
+
 def solve_day(input: str) -> int:
     targets = [20, 60, 100, 140, 180, 220]
     info = DataTransforms(input).lines
@@ -215,30 +232,76 @@ def solve_day(input: str) -> int:
     cycles = 1
     x = 1
     signal = 0
-    lookup: dict[int, int] = {}
-    xlookup: dict[int, int] = {}
+    signals: dict[int, int] = {}
+    xlookups: dict[int, int] = {}
     for instr in instrs:
         for i in range(cycles, cycles + instr.cycles):
-            lookup[i] = i * x  # build lookup
-            xlookup[i] = x
-            # print(xlookup[i], lookup[i], i, instr)
+            signals[i] = i * x  # build signals
+            xlookups[i] = x
+            # print(xlookups[i], signals[i], i, instr)
         cycles += instr.cycles
         if isinstance(instr, Add):
             x += instr.value
         signal = cycles * x
-    return sum([lookup[target] for target in targets])
+    return sum([signals[target] for target in targets])
+
+
+def visualise_screen(pixels: dict[tuple[int, int], str]) -> str:
+    screen = ""
+    for i in range(CRT.height):
+        for j in range(CRT.width):
+            screen += pixels[(j, i)]
+        screen += "\n"
+    return screen
+
+
+def solve_day_part_2(input: str) -> str:
+    targets = [20, 60, 100, 140, 180, 220]
+    pixels = collections.defaultdict(lambda: ".")
+    info = DataTransforms(input).lines
+    instrs: list[Instr] = [
+        item
+        for sublist in list(
+            itertools.chain.from_iterable(
+                [[option.from_text(line) for option in [Add, Noop]] for line in info]
+            )
+        )
+        for item in sublist
+    ]
+    cycles = 1
+    x = 1
+    signal = 0
+    signals: dict[int, int] = {}
+    xlookups: dict[int, int] = {}
+    for instr in instrs:
+        for i in range(cycles, cycles + instr.cycles):
+            signals[i] = i * x  # build signals
+            xlookups[i] = x
+            pixels[((i - 1) % CRT.width, (i - 1) // CRT.width)] = (
+                "#" if (i - 1) % CRT.width in [x - 1, x, x + 1] else "."
+            )
+            # print(xlookups[i], signals[i], i, instr)
+        cycles += instr.cycles
+        if isinstance(instr, Add):
+            x += instr.value
+        signal = cycles * x
+    return visualise_screen(pixels)
 
 
 def test_day_10_part_1(input: str) -> None:
     assert 13140 == solve_day(input)
 
 
-# def test_day_10_part_2(input: str) -> None:
-#     assert 8 == solve_day_part_2(input)
+def test_day_10_part_2(input: str) -> None:
+    assert part_2_answer == solve_day_part_2(input)
+
 
 if __name__ == "__main__":
     real_input = DayInterface(10).get_day()
     # print(real_input)
     test_day_10_part_1(test_input)
-    # test_day_10_part_2(test_input)
-    print(DayInterface(10).submit_day(solve_day(real_input)))
+    test_day_10_part_2(test_input)
+    print(solve_day_part_2(real_input))
+    # print(DayInterface(10).submit_day(solve_day(real_input)))
+
+    # submitted over cli
