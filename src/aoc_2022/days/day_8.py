@@ -25,6 +25,7 @@ class Visible(Enum):
     bottom: str = "bottom"
 
 
+# there were actually mistakes in part 1 that accidentally _didn't_ break it
 def solve_day(input: str) -> int:
     info = DataTransforms(input).heat_map_iterator
     row_tracker = collections.defaultdict(list)
