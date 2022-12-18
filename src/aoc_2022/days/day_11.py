@@ -1,5 +1,6 @@
 import ast
 from dataclasses import dataclass
+from math import prod
 import re
 from typing import Callable, Self
 from aoc_2022.utils.day_handler import DayInterface
@@ -84,10 +85,10 @@ class Monkey:
 
 
 
-def solve_day(input: str) -> int:
+def solve_day(input: str, rounds: int) -> int:
     info = input  # no manipulation necessary
     monkeys = Monkey.from_text(info)
-    for round in range(20 // 4):
+    for round in range(rounds):
         for monkey in monkeys:
             empty = []
             for i, item in enumerate(monkey.items):
@@ -100,12 +101,12 @@ def solve_day(input: str) -> int:
                 monkey.items.pop(j)
     monkeys = sorted(monkeys, key=lambda monk: monk.inspections)
     print(monkeys)
-    return sum([monkey.inspections for monkey in monkeys[-2:]])
+    return prod([monkey.inspections for monkey in monkeys[-2:]])
 
 
 def test_day_11_part_1(input: str) -> None:
     # test solution to part 1
-    assert 10605 == solve_day(input)
+    assert 10605 == solve_day(input, 20)
 
 
 # def test_day_11_part_2(input: str) -> None:
@@ -117,4 +118,4 @@ if __name__ == "__main__":
     real_input = DayInterface(11).get_day()
     test_day_11_part_1(test_input)
     # test_day_11_part_2(test_input)
-    print(DayInterface(11).submit_day(solve_day(real_input)))
+    print(DayInterface(11).submit_day(solve_day(real_input, 20)))
