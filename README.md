@@ -67,7 +67,9 @@ if they're doing an aoc2023 then maybe at that point
    python -m aoc_2022.tools.cli get > some.txt
    # submit data
    python -m aoc_2022.tools.cli submit --day 3 --year 2022 --part 2 -s 594  # where -s is the solution
+   # generate template file
    python -m aoc_2022.tools.mkday_cli -d 11 -p ./path/to/days/day_11.py
    # creates a file with appropriate day numbering and testing segments
    # contains: solve function, 2 test functions, submit section
+   # the option for languages is a placeholder and will not actually do anything right now
    ```
