@@ -87,23 +87,25 @@ class Monkey:
 def solve_day(input: str) -> int:
     info = input  # no manipulation necessary
     monkeys = Monkey.from_text(info)
-    print(monkeys)
-    for monkey in monkeys:
-        cop_items = monkey.items.copy()
-        for i, item in enumerate(cop_items):
-            item = monkey.operation(item)
-            item = item // 3
-            test = monkey.test(item)
-            monkeys[monkey.actions[test]].items.append(item)
-            monkey.items.pop(i)
-            monkey.inspections += 1
+    for round in range(20 // 4):
+        for monkey in monkeys:
+            empty = []
+            for i, item in enumerate(monkey.items):
+                item = monkey.operation(item) // 3
+                test = monkey.test(item)
+                monkeys[monkey.actions[test]].items.append(item)
+                empty.append(i)
+                monkey.inspections += 1
+            for j in reversed(empty):
+                monkey.items.pop(j)
     monkeys = sorted(monkeys, key=lambda monk: monk.inspections)
+    print(monkeys)
     return sum([monkey.inspections for monkey in monkeys[-2:]])
 
 
 def test_day_11_part_1(input: str) -> None:
     # test solution to part 1
-    assert 7 == solve_day(input)
+    assert 10605 == solve_day(input)
 
 
 # def test_day_11_part_2(input: str) -> None:
