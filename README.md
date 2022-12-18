@@ -73,4 +73,4 @@ if they're doing an aoc2023 then maybe at that point
    # contains: solve function, 2 test functions, submit section
    # the option for languages is a placeholder and will not actually do anything right now
    ```
-   it's worth noting, of course, `aoc_2022` is replaced by `src.aoc_2022` in these cli instructions if you clone into the repo instead of pip installing the repo
+   it's worth noting, of course, `aoc_2022` is replaced by `src.aoc_2022` in these cli instructions if one clones into the repo instead of pip installing the repo
