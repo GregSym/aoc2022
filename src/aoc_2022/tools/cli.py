@@ -2,6 +2,7 @@ import argparse
 from datetime import datetime
 from typing import Any, NamedTuple, Self
 from aoc_2022.utils.day_handler import DayInterface
+from aoc_2022.utils.mkday import write_file
 
 
 class AocArgs(NamedTuple):
