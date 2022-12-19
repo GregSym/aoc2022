@@ -88,6 +88,11 @@ class Monkey:
 def solve_day(input: str, rounds: int) -> int:
     info = input  # no manipulation necessary
     monkeys = Monkey.from_text(info)
+    print(monkeys)
+    assert monkeys[0].operation(5) == 5 * 19
+    assert monkeys[1].operation(2) == 8
+    assert monkeys[2].operation(2) == 4
+    assert monkeys[3].operation(3) == 6
     for round in range(rounds):
         for monkey in monkeys:
             empty = []
@@ -97,15 +102,17 @@ def solve_day(input: str, rounds: int) -> int:
                 monkeys[monkey.actions[test]].items.append(item)
                 empty.append(i)
                 monkey.inspections += 1
+                print(item)
             for j in reversed(empty):
                 monkey.items.pop(j)
+    # assert set(monkeys[0].items) == set([10, 12, 14, 26, 34])
     monkeys = sorted(monkeys, key=lambda monk: monk.inspections)
-    print(monkeys)
     return prod([monkey.inspections for monkey in monkeys[-2:]])
 
 
 def test_day_11_part_1(input: str) -> None:
     # test solution to part 1
+    assert 20 == solve_day(input, 1)
     assert 10605 == solve_day(input, 20)
 
 
