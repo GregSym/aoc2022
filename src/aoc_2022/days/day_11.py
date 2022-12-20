@@ -118,11 +118,11 @@ def test_day_11_part_1(input: str) -> None:
 
 def test_day_11_part_2(input: str) -> None:
     # test solution to part 2
-    # assert 20 == solve_day(input, 1, 3)
+    assert 20 == solve_day(input, 1, 3)
     assert 4 * 6 == solve_day(input, 1, 1)
     assert 10197 == solve_day(input, 20, 1)
-    assert 5204 * 5192 == solve_day(input, 1000, 1)
-    assert 2713310158 == solve_day(input, 10_000, 1)
+    # assert 5204 * 5192 == solve_day(input, 1000, 1)
+    # assert 2713310158 == solve_day(input, 10_000, 1)
 
 
 if __name__ == "__main__":
