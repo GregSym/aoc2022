@@ -46,9 +46,13 @@ class Monkey:
     id: int
     items: list[int]
     operation: Callable[[int], int]
-    test: Callable[[int], bool]
+    divide_by: int
     actions: dict[bool, int]
     inspections: int = 0
+
+    @property
+    def test(self) -> Callable[[int], bool]:
+        return lambda item: item // self.divide_by == item / self.divide_by
 
     def __post_init__(self) -> None:
         # evaluation is a little dicey here
@@ -75,24 +79,28 @@ class Monkey:
             operation = eval(
                 "lambda old: " + match["operation"].strip()
             )  # haha, evil stuff
-            test = lambda item: item // int(match["test"]) == item / int(match["test"])
+            # so this is somehow always writing to the same place in memory??
+            divide_by = int(match["test"])
+            test = lambda item: item // divide_by == item / divide_by
             actions = {
                 True: int(match["action_true"]),
                 False: int(match["action_false"]),
             }
-            monkeys.append(cls(int(match["id"]), items, operation, test, actions))
+            monkeys.append(
+                cls(
+                    int(match["id"]),
+                    items,
+                    operation,
+                    divide_by,
+                    actions,
+                )
+            )
         return monkeys
-
 
 
 def solve_day(input: str, rounds: int) -> int:
     info = input  # no manipulation necessary
     monkeys = Monkey.from_text(info)
-    print(monkeys)
-    assert monkeys[0].operation(5) == 5 * 19
-    assert monkeys[1].operation(2) == 8
-    assert monkeys[2].operation(2) == 4
-    assert monkeys[3].operation(3) == 6
     for round in range(rounds):
         for monkey in monkeys:
             empty = []
@@ -102,7 +110,6 @@ def solve_day(input: str, rounds: int) -> int:
                 monkeys[monkey.actions[test]].items.append(item)
                 empty.append(i)
                 monkey.inspections += 1
-                print(item)
             for j in reversed(empty):
                 monkey.items.pop(j)
     # assert set(monkeys[0].items) == set([10, 12, 14, 26, 34])
