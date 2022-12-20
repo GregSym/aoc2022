@@ -98,14 +98,14 @@ class Monkey:
         return monkeys
 
 
-def solve_day(input: str, rounds: int) -> int:
+def solve_day(input: str, rounds: int, relief: int = 3) -> int:
     info = input  # no manipulation necessary
     monkeys = Monkey.from_text(info)
     for round in range(rounds):
         for monkey in monkeys:
             empty = []
             for i, item in enumerate(monkey.items):
-                item = monkey.operation(item) // 3
+                item = monkey.operation(item) // relief
                 test = monkey.test(item)
                 monkeys[monkey.actions[test]].items.append(item)
                 empty.append(i)
@@ -123,13 +123,16 @@ def test_day_11_part_1(input: str) -> None:
     assert 10605 == solve_day(input, 20)
 
 
-# def test_day_11_part_2(input: str) -> None:
-#    # test solution to part 2
-#    assert 19 == solve_day(input)
+def test_day_11_part_2(input: str) -> None:
+   # test solution to part 2
+   assert 4 * 6 == solve_day(input, 1, 1)
+   assert 99 * 103 == solve_day(input, 20, 1)
+   assert 5204 * 5192 == solve_day(input, 1000, 1)
+   assert 2713310158 == solve_day(input, 10_000, 1)
 
 
 if __name__ == "__main__":
     real_input = DayInterface(11).get_day()
     test_day_11_part_1(test_input)
-    # test_day_11_part_2(test_input)
+    test_day_11_part_2(test_input)
     print(DayInterface(11).submit_day(solve_day(real_input, 20)))
