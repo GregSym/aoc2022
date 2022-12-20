@@ -92,9 +92,9 @@ class Monkey:
 def solve_day(input: str, rounds: int, relief: int = 3) -> int:
     info = input  # no manipulation necessary
     monkeys = Monkey.from_text(info)
-    for round in range(rounds):
+    for _ in range(rounds):
         for monkey in monkeys:
-            empty = []
+            to_empty = []
             for i, item in enumerate(monkey.items):
                 item = (
                     monkey.operation(item) // relief
@@ -103,9 +103,9 @@ def solve_day(input: str, rounds: int, relief: int = 3) -> int:
                 )
                 test = monkey.test(item)
                 monkeys[monkey.actions[test]].items.append(item)
-                empty.append(i)
+                to_empty.append(i)
                 monkey.inspections += 1
-            for j in reversed(empty):
+            for j in reversed(to_empty):
                 monkey.items.pop(j)
     # assert set(monkeys[0].items) == set([10, 12, 14, 26, 34])
     monkeys = sorted(monkeys, key=lambda monk: monk.inspections)
