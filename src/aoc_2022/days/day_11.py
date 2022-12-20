@@ -54,7 +54,7 @@ class Monkey:
     def test(self) -> Callable[[int], bool]:
         """was instantiating this directly but the assessment
         happened at the wrong time"""
-        return lambda item: item // self.divide_by == item / self.divide_by
+        return lambda item: item % self.divide_by == 0
 
     def __post_init__(self) -> None:
         # evaluation is a little dicey here
