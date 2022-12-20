@@ -52,6 +52,8 @@ class Monkey:
 
     @property
     def test(self) -> Callable[[int], bool]:
+        """was instantiating this directly but the assessment
+        happened at the wrong time"""
         return lambda item: item // self.divide_by == item / self.divide_by
 
     def __post_init__(self) -> None:
@@ -96,11 +98,7 @@ def solve_day(input: str, rounds: int, relief: int = 3) -> int:
         for monkey in monkeys:
             to_empty = []
             for i, item in enumerate(monkey.items):
-                item = (
-                    monkey.operation(item) // relief
-                    if relief > 1
-                    else monkey.operation(item)
-                )
+                item = monkey.operation(item) // relief
                 test = monkey.test(item)
                 monkeys[monkey.actions[test]].items.append(item)
                 to_empty.append(i)
