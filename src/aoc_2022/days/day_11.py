@@ -81,20 +81,11 @@ class Monkey:
             )  # haha, evil stuff
             # so this is somehow always writing to the same place in memory??
             divide_by = int(match["test"])
-            test = lambda item: item // divide_by == item / divide_by
             actions = {
                 True: int(match["action_true"]),
                 False: int(match["action_false"]),
             }
-            monkeys.append(
-                cls(
-                    int(match["id"]),
-                    items,
-                    operation,
-                    divide_by,
-                    actions,
-                )
-            )
+            monkeys.append(cls(int(match["id"]), items, operation, divide_by, actions))
         return monkeys
 
 
@@ -105,7 +96,11 @@ def solve_day(input: str, rounds: int, relief: int = 3) -> int:
         for monkey in monkeys:
             empty = []
             for i, item in enumerate(monkey.items):
-                item = monkey.operation(item) // relief
+                item = (
+                    monkey.operation(item) // relief
+                    if relief > 1
+                    else monkey.operation(item)
+                )
                 test = monkey.test(item)
                 monkeys[monkey.actions[test]].items.append(item)
                 empty.append(i)
@@ -124,11 +119,12 @@ def test_day_11_part_1(input: str) -> None:
 
 
 def test_day_11_part_2(input: str) -> None:
-   # test solution to part 2
-   assert 4 * 6 == solve_day(input, 1, 1)
-   assert 99 * 103 == solve_day(input, 20, 1)
-   assert 5204 * 5192 == solve_day(input, 1000, 1)
-   assert 2713310158 == solve_day(input, 10_000, 1)
+    # test solution to part 2
+    # assert 20 == solve_day(input, 1, 3)
+    assert 4 * 6 == solve_day(input, 1, 1)
+    assert 10197 == solve_day(input, 20, 1)
+    assert 5204 * 5192 == solve_day(input, 1000, 1)
+    assert 2713310158 == solve_day(input, 10_000, 1)
 
 
 if __name__ == "__main__":
