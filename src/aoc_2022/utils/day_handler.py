@@ -27,7 +27,6 @@ class DayHomepage:
     @property
     def past_answers(self) -> list[int | str]:
         body = self.get_day()
-        print(body)
         pattern = re.compile(r"Your puzzle answer was \<code\>(?P<answer>[^\<]*?)\<")
         return [
             int(m["answer"]) if m["answer"].isdigit() else m["answer"]
