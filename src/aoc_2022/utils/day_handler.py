@@ -58,12 +58,6 @@ class DayInterface:
         def build_url(day: int) -> str:
             return f"{self.year_url}/{day}/answer"
 
-        res = requests.post(
-            build_url(self.day),
-            data={"level": part, "answer": data},
-            cookies={"session": self.key},
-        )
-
         if len(self.homepage.past_answers) >= 1 and part == 1:
             if self.homepage.past_answers[0] == data:
                 return "you've submitted that answer previously, it was correct"
@@ -74,6 +68,12 @@ class DayInterface:
                 return "you've submitted that answer previously, it was correct"
             else:
                 return "you've answered before, but this submission is wrong"
+
+        res = requests.post(
+            build_url(self.day),
+            data={"level": part, "answer": data},
+            cookies={"session": self.key},
+        )
 
         key_phrases = [
             "That's the right answer!",
